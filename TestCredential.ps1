@@ -1,22 +1,5 @@
-<#PSScriptInfo 
-.DESCRIPTION 
-    Simulates an Authentication Request in a Domain envrionment using a PSCredential Object. Returns $true if both Username and Password pair are valid. 
-.VERSION 
-    1.3
-.GUID 
-    6a18515f-73d3-4fb4-884f-412395aa5054 
-.AUTHOR 
-    Thomas Malkewitz @dotps1 
-.TAGS 
-    PSCredential, Credential
-.RELEASENOTES 
-    Updated $Domain default value to $Credential.GetNetworkCredential().Domain.
-    Added support for multipul credential objects to be passed into $Credential.
-.PROJECTURI
-    http://dotps1.github.io
- #>
- #JAW EDIT - Added in test local if "domain" is equal to computername environment variable 09/05/2018
-
+#original script written by dotps1 at https://github.com/dotps1/PSFunctions
+#added extra check to validate local machine credentials if domain part matches current hostname or a dot e.g. .\admin
  Function Test-Credential {
     [OutputType([Bool])]
     
@@ -42,7 +25,7 @@
     Begin {
         [System.Reflection.Assembly]::LoadWithPartialName("System.DirectoryServices.AccountManagement") |
             Out-Null
-        if ($Domain -ne $env:COMPUTERNAME) {
+        if ($Domain -ne $env:COMPUTERNAME -or $Domain -ne ".") {
         $principalContext = New-Object System.DirectoryServices.AccountManagement.PrincipalContext(
             [System.DirectoryServices.AccountManagement.ContextType]::Domain, $Domain
         )
